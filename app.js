@@ -1,6 +1,6 @@
 // ==========================================
-// TUNEFLOW - MAIN APP
-// Permanent Music Storage with IndexedDB
+// FLOWTUNE - MAIN APP
+// Music Player + IndexedDB + Mood Engine
 // ==========================================
 
 let currentSongIndex = -1;
@@ -12,7 +12,7 @@ let playerTitle;
 let playerArtist;
 let playerImage;
 
-const DB_NAME = "TuneFlowDB";
+const DB_NAME = "FlowTuneDB";
 const DB_VERSION = 1;
 const STORE_NAME = "songs";
 
@@ -55,7 +55,7 @@ function openDatabase() {
 
 
 // ==========================================
-// SAVE SONG TO DATABASE
+// SAVE SONG
 // ==========================================
 
 async function saveSongToDatabase(song) {
@@ -70,7 +70,8 @@ async function saveSongToDatabase(song) {
         const store =
             transaction.objectStore(STORE_NAME);
 
-        const request = store.put(song);
+        const request =
+            store.put(song);
 
         request.onsuccess = function() {
             resolve();
@@ -86,7 +87,7 @@ async function saveSongToDatabase(song) {
 
 
 // ==========================================
-// GET ALL UPLOADED SONGS
+// GET STORED SONGS
 // ==========================================
 
 async function getStoredSongs() {
@@ -101,7 +102,8 @@ async function getStoredSongs() {
         const store =
             transaction.objectStore(STORE_NAME);
 
-        const request = store.getAll();
+        const request =
+            store.getAll();
 
         request.onsuccess = function() {
             resolve(request.result || []);
@@ -124,29 +126,32 @@ async function loadSongs() {
 
     try {
 
-        // Songs from songs.js
+        // Built-in songs from songs.js
         allSongs = Array.isArray(window.songs)
             ? [...window.songs]
             : [];
 
-        // Uploaded songs
+        // Uploaded songs from IndexedDB
         const storedSongs =
             await getStoredSongs();
 
         storedSongs.forEach(song => {
 
-            // Create fresh URLs after every page load
             if (song.audioBlob) {
 
                 song.audio =
-                    URL.createObjectURL(song.audioBlob);
+                    URL.createObjectURL(
+                        song.audioBlob
+                    );
 
             }
 
             if (song.coverBlob) {
 
                 song.image =
-                    URL.createObjectURL(song.coverBlob);
+                    URL.createObjectURL(
+                        song.coverBlob
+                    );
 
             }
 
@@ -155,7 +160,7 @@ async function loadSongs() {
         });
 
         console.log(
-            "TuneFlow songs:",
+            "FlowTune songs:",
             allSongs
         );
 
@@ -183,13 +188,7 @@ function renderSongs() {
         document.getElementById("songGrid");
 
     if (!grid) {
-
-        console.log(
-            "songGrid not found"
-        );
-
         return;
-
     }
 
     grid.innerHTML = "";
@@ -198,7 +197,7 @@ function renderSongs() {
 
         grid.innerHTML = `
             <div class="no-results">
-                <h2>No songs yet 🎵</h2>
+                <h2>No songs yet</h2>
                 <p>Use Add Music to upload your first song.</p>
             </div>
         `;
@@ -206,7 +205,6 @@ function renderSongs() {
         return;
 
     }
-
 
     allSongs.forEach((song, index) => {
 
@@ -216,9 +214,11 @@ function renderSongs() {
         card.className = "song-card";
 
         card.innerHTML = `
-
             <img
-                src="${escapeHTML(song.image || "https://picsum.photos/300")}"
+                src="${escapeHTML(
+                    song.image ||
+                    "https://picsum.photos/300"
+                )}"
                 alt="${escapeHTML(song.title)}"
             >
 
@@ -233,9 +233,8 @@ function renderSongs() {
             <button
                 onclick="playSong(${index})"
             >
-                ▶ Play
+                Play
             </button>
-
         `;
 
         grid.appendChild(card);
@@ -280,9 +279,7 @@ function playSong(index) {
     audioPlayer.play()
         .then(() => {
 
-            if (playButton) {
-                playButton.textContent = "⏸";
-            }
+            updatePlayButton();
 
         })
         .catch(error => {
@@ -304,7 +301,9 @@ function playSong(index) {
 function playFirstSong() {
 
     if (allSongs.length > 0) {
+
         playSong(0);
+
     }
 
 }
@@ -338,14 +337,40 @@ function togglePlay() {
 
     }
 
-    const player = documen.getElementById("player");
+}
+
+
+// ==========================================
+// UPDATE PLAY BUTTON
+// ==========================================
+
+function updatePlayButton() {
+
+    if (!playButton || !audioPlayer) {
+        return;
+    }
 
     if (audioPlayer.paused) {
-        player.classList.remove("playing");
+
+        playButton.innerHTML = `
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5 L19 12 L8 19 Z"></path>
+            </svg>
+        `;
+
     } else {
-        player.classList.add("playing");
+
+        playButton.innerHTML = `
+            <svg viewBox="0 0 24 24">
+                <rect x="7" y="5" width="3" height="14"></rect>
+                <rect x="14" y="5" width="3" height="14"></rect>
+            </svg>
+        `;
+
     }
+
 }
+
 
 // ==========================================
 // NEXT SONG
@@ -361,7 +386,9 @@ function nextSong() {
         currentSongIndex + 1;
 
     if (next >= allSongs.length) {
+
         next = 0;
+
     }
 
     playSong(next);
@@ -383,7 +410,10 @@ function previousSong() {
         currentSongIndex - 1;
 
     if (previous < 0) {
-        previous = allSongs.length - 1;
+
+        previous =
+            allSongs.length - 1;
+
     }
 
     playSong(previous);
@@ -402,16 +432,30 @@ function changeVolume() {
     }
 
     const slider =
-        document.getElementById(
-            "volumeSlider"
-        );
+        document.getElementById("volumeControl");
 
-    if (slider) {
-
-        audioPlayer.volume =
-            Number(slider.value) / 100;
-
+    if (!slider) {
+        return;
     }
+
+    const value =
+        Number(slider.value);
+
+    audioPlayer.volume =
+        value;
+
+    const percent =
+        value * 100;
+
+    slider.style.background = `
+        linear-gradient(
+            to right,
+            #22e6a8 0%,
+            #22e6a8 ${percent}%,
+            rgba(255,255,255,0.35) ${percent}%,
+            rgba(255,255,255,0.35) 100%
+        )
+    `;
 
 }
 
@@ -420,12 +464,20 @@ function changeVolume() {
 // ADD MUSIC
 // ==========================================
 
-const addMusicForm =
-    document.getElementById(
-        "addMusicForm"
-    );
+function setupAddMusic() {
 
-if (addMusicForm) {
+    const addMusicForm =
+        document.getElementById(
+            "addMusicForm"
+        );
+
+    if (!addMusicForm) {
+        console.log(
+            "Add Music form not found."
+        );
+
+        return;
+    }
 
     addMusicForm.addEventListener(
         "submit",
@@ -433,48 +485,81 @@ if (addMusicForm) {
 
             event.preventDefault();
 
-            const musicFile =
+            const musicInput =
                 document.getElementById(
                     "musicFile"
-                ).files[0];
+                );
 
-            const coverFile =
+            const coverInput =
                 document.getElementById(
                     "coverFile"
-                ).files[0];
+                );
 
-            const title =
+            const titleInput =
                 document.getElementById(
                     "songTitle"
-                ).value.trim();
+                );
 
-            const artist =
+            const artistInput =
                 document.getElementById(
                     "songArtist"
-                ).value.trim();
+                );
 
-            const album =
+            const albumInput =
                 document.getElementById(
                     "songAlbum"
-                ).value.trim();
+                );
 
-            const genre =
+            const genreInput =
                 document.getElementById(
                     "songGenre"
-                ).value;
+                );
 
 
-            // Validation
+            const musicFile =
+                musicInput
+                    ? musicInput.files[0]
+                    : null;
+
+            const coverFile =
+                coverInput
+                    ? coverInput.files[0]
+                    : null;
+
+            const title =
+                titleInput
+                    ? titleInput.value.trim()
+                    : "";
+
+            const artist =
+                artistInput
+                    ? artistInput.value.trim()
+                    : "";
+
+            const album =
+                albumInput
+                    ? albumInput.value.trim()
+                    : "";
+
+            const genre =
+                genreInput
+                    ? genreInput.value
+                    : "Other";
+
+
+            // Validate music
             if (!musicFile) {
 
                 alert(
-                    "Please choose an MP3 file."
+                    "Please choose a music file."
                 );
 
                 return;
 
             }
 
+
+            // Validate title and artist
             if (!title || !artist) {
 
                 alert(
@@ -501,10 +586,15 @@ if (addMusicForm) {
                         artist,
 
                     album:
-                        album || "Unknown Album",
+                        album ||
+                        "Unknown Album",
 
                     genre:
-                        genre || "Other",
+                        genre ||
+                        "Other",
+
+                    mood:
+                        "Other",
 
                     audioBlob:
                         musicFile,
@@ -512,7 +602,6 @@ if (addMusicForm) {
                     coverBlob:
                         coverFile || null,
 
-                    // Temporary URLs
                     audio:
                         URL.createObjectURL(
                             musicFile
@@ -528,18 +617,19 @@ if (addMusicForm) {
                 };
 
 
-                // Save permanently
+                // Save to IndexedDB
                 await saveSongToDatabase(
                     newSong
                 );
 
 
-                // Add immediately
+                // Add to current list
                 allSongs.push(
                     newSong
                 );
 
 
+                // Refresh cards
                 renderSongs();
 
 
@@ -552,7 +642,7 @@ if (addMusicForm) {
                 if (message) {
 
                     message.textContent =
-                        "✅ Song added successfully!";
+                        "Song added successfully.";
 
                     message.className =
                         "add-music-message success";
@@ -560,7 +650,7 @@ if (addMusicForm) {
                 } else {
 
                     alert(
-                        "✅ Song added successfully!"
+                        "Song added successfully."
                     );
 
                 }
@@ -568,12 +658,6 @@ if (addMusicForm) {
 
                 // Reset form
                 addMusicForm.reset();
-
-
-                console.log(
-                    "Song saved:",
-                    newSong
-                );
 
 
             } catch (error) {
@@ -584,7 +668,7 @@ if (addMusicForm) {
                 );
 
                 alert(
-                    "❌ Could not save the song."
+                    "Could not save the song."
                 );
 
             }
@@ -655,11 +739,12 @@ function searchSongs() {
                 result.className =
                     "search-result";
 
-
                 result.innerHTML = `
-
                     <img
-                        src="${escapeHTML(song.image)}"
+                        src="${escapeHTML(
+                            song.image ||
+                            "https://picsum.photos/300"
+                        )}"
                         alt=""
                     >
 
@@ -676,9 +761,8 @@ function searchSongs() {
                     <button
                         onclick="playSong(${index})"
                     >
-                        ▶
+                        Play
                     </button>
-
                 `;
 
                 results.appendChild(
@@ -699,39 +783,6 @@ function searchSongs() {
 
 function showPage(pageName) {
 
-    // Hide all pages
-    document.querySelectorAll(".page").forEach(page => {
-        page.classList.add("hidden");
-    });
-
-    //Show selected page
-    const selectedpage = document.getElementById(page + "Page");
-
-    if (selectedPage) {
-        selectedPage.classList.remove("hidden");
-    }
-
-    //Remove active class from all sidebar buttons
-    document.querySelectorAll(".sidebar nav button").forEach(button => {
-        button.classList.remove("active");
-    });
-
-    //Set active button
-    const buttons = document.querySelectorAll(".sidebar nav button");
-
-    const pageButtonMap = {
-        home: 0,
-        search: 1,
-        library: 2,
-        addMusic: 3
-    };
-
-    const buttonIndex = pageButtonMap[pageName];
-
-    if (buttonIndex !== undefined && buttons[buttonIndex]) {
-        buttons[buttonIndex].classList.add("activde");
-    }
-
     document
         .querySelectorAll(".page")
         .forEach(page => {
@@ -743,17 +794,62 @@ function showPage(pageName) {
         });
 
 
-    const page =
+    const selectedPage =
         document.getElementById(
             pageName + "Page"
         );
 
 
-    if (page) {
+    if (selectedPage) {
 
-        page.classList.remove(
+        selectedPage.classList.remove(
             "hidden"
         );
+
+    }
+
+
+    // Sidebar active buttons
+    document
+        .querySelectorAll(
+            ".sidebar nav button"
+        )
+        .forEach(button => {
+
+            button.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    const pageButtonMap = {
+
+        home: 0,
+        search: 1,
+        library: 2,
+        addMusic: 3
+
+    };
+
+
+    const buttons =
+        document.querySelectorAll(
+            ".sidebar nav button"
+        );
+
+
+    const buttonIndex =
+        pageButtonMap[pageName];
+
+
+    if (
+        buttonIndex !== undefined &&
+        buttons[buttonIndex]
+    ) {
+
+        buttons[buttonIndex]
+            .classList.add("active");
 
     }
 
@@ -767,17 +863,187 @@ function showPage(pageName) {
 function escapeHTML(value) {
 
     return String(value || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 
 }
 
 
 // ==========================================
-// INITIALIZE
+// MOOD ENGINE
+// ==========================================
+
+function selectMood(mood) {
+
+    const moodSongs =
+        allSongs.filter(song =>
+
+            song.mood &&
+            song.mood.toLowerCase() ===
+            mood.toLowerCase()
+
+        );
+
+
+    const selectedMood =
+        document.getElementById(
+            "selectedMood"
+        );
+
+
+    if (!selectedMood) {
+        return;
+    }
+
+
+    if (moodSongs.length === 0) {
+
+        selectedMood.textContent =
+            "No songs available for " +
+            mood +
+            " yet.";
+
+        return;
+
+    }
+
+
+    selectedMood.textContent =
+        mood +
+        " mood selected - " +
+        moodSongs.length +
+        " song" +
+        (
+            moodSongs.length > 1
+                ? "s"
+                : ""
+        ) +
+        " found";
+
+
+    displayMoodSongs(
+        moodSongs
+    );
+
+}
+
+
+// ==========================================
+// DISPLAY MOOD SONGS
+// ==========================================
+
+function displayMoodSongs(
+    moodSongs
+) {
+
+    const songGrid =
+        document.getElementById(
+            "songGrid"
+        );
+
+
+    if (!songGrid) {
+        return;
+    }
+
+
+    songGrid.innerHTML = "";
+
+
+    moodSongs.forEach(song => {
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "song-card";
+
+
+        card.innerHTML = `
+            <img
+                src="${escapeHTML(
+                    song.image ||
+                    "https://picsum.photos/300"
+                )}"
+                alt="${escapeHTML(
+                    song.title
+                )}"
+            >
+
+            <h3>
+                ${escapeHTML(
+                    song.title
+                )}
+            </h3>
+
+            <p>
+                ${escapeHTML(
+                    song.artist
+                )}
+            </p>
+
+            <button>
+                Play
+            </button>
+        `;
+
+
+        card.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target.tagName ===
+                    "BUTTON"
+                ) {
+
+                    const index =
+                        allSongs.indexOf(
+                            song
+                        );
+
+                    if (index !== -1) {
+                        playSong(index);
+                    }
+
+                }
+
+            }
+        );
+
+
+        songGrid.appendChild(
+            card
+        );
+
+    });
+
+}
+
+
+// ==========================================
+// INITIALIZE APP
 // ==========================================
 
 document.addEventListener(
@@ -810,16 +1076,14 @@ document.addEventListener(
             );
 
 
+        // Audio events
         if (audioPlayer) {
 
             audioPlayer.addEventListener(
                 "play",
                 function() {
 
-                    if (playButton) {
-                        playButton.textContent =
-                            "⏸";
-                    }
+                    updatePlayButton();
 
                 }
             );
@@ -829,10 +1093,7 @@ document.addEventListener(
                 "pause",
                 function() {
 
-                    if (playButton) {
-                        playButton.textContent =
-                            "▶";
-                    }
+                    updatePlayButton();
 
                 }
             );
@@ -850,75 +1111,21 @@ document.addEventListener(
         }
 
 
+        // Add Music
+        setupAddMusic();
+
+
+        // Load songs
         await loadSongs();
 
+
+        // Volume
         changeVolume();
 
+
         console.log(
-            "🎵 TuneFlow is ready!"
+            "FlowTune is ready."
         );
 
     }
 );
-
-// ==========================================
-// FLOWTUNE - MUSIC MOOD ENGINE
-// ==========================================
-
-function seletMood(mood) {
-
-    //find songs matching the selected mood
-    const moodSongs = songs.filter(song =>
-        song.mood &&
-        song.mood.toLowerCase( ) === mood.toLowerCase( )
-    );
-
-    //Show selected mood
-    const selectedMood = document.getElementById("selectedMood");
-
-    if (!selectedMood) return;
-
-    if (moodSongs.length === 0) {
-        selectedMood.textContent =
-        "No songs available for " + mood + "yet.";
-        return;
-    }
-
-    selectedMood.textContent =
-    mood + "mood selected •" +
-    moodSongs.length + " Song" +
-    (moodSongs.length > 1 ? "s" : "") +
-    " found";
-    
-    // Show matching songs
-    displayMoodSongs(moodSongs);
-}
-
-function displayMoodSongs(moodSongs) {
-
-    const songGrid =
-        document.querySelector(".song-grid");
-
-    if (!songGrid) return;
-
-    songGrid.innerHTML = "";
-
-    moodSongs.forEach(song => {
-
-        const card = document.createElement("div");
-
-        card.className = "song-card";
-        
-        card.innerHTML = `
-            <img src="${song.image}" alt="${song.title}">
-            <h3>${song.title}</h3>
-            <p>${song.artist}</p>
-        `;
-
-        card.addEventListener("click", () => {
-            playSong(song);
-        });
-
-        songGrid.appendChild(card);
-    });
-}
