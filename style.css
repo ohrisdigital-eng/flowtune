@@ -2061,3 +2061,17 @@ COLORFUL SIDEBAR ICONS
     transform: none !important;
     margin: 0 !important;
 }
+
+/* Remove unwanted empty square from Add Song button */
+#addMusicFrom button::before,
+#addMusicFrom button::after,
+.add-music-button::before,
+.add-music-button::after {
+   content: none !important;
+   display: none !important;
+}
+
+#addMusicFrom button {
+   font-family: Arial, sans-serif !important;
+   font-size: 16px !important;
+}
