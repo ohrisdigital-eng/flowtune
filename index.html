@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FlowTune - Music Player</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =================================================
+         SIDEBAR
+         ================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-music"></i>
+
+            <span>FlowTune</span>
+
+        </div>
+
+
+        <nav>
+
+            <button
+                onclick="showPage('home')"
+            >
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </button>
+
+
+            <button
+                onclick="showPage('search')"
+            >
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+            </button>
+
+
+            <button
+                onclick="showPage('library')"
+            >
+                <i class="fa-solid fa-book-open"></i>
+                <span>Library</span>
+            </button>
+
+
+            <button
+                onclick="showPage('addMusic')"
+            >
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>Add Music</span>
+            </button>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =================================================
+         MAIN CONTENT
+         ================================================= -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             TOP SEARCH BAR
+             ================================================= -->
+
+        <header class="topbar">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search songs, artists..."
+            >
+
+            <button class="online-search-button" onclick="searchSongs()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <Search></Search>
+            </button>
+
+        </header>
+
+
+
+        <!-- =================================================
+             HOME
+             ================================================= -->
+
+        <section
+            id="homePage"
+            class="page"
+        >
+
+
+            <!-- HERO -->
+
+            <div class="hero">
+
+                <h1>
+                    Welcome to FlowTune
+                </h1>
+
+
+                <p>
+                    Your music. Your vibe.
+                    Search, play and enjoy your music
+                    in one beautiful place.
+                </p>
+
+
+                <button
+                    onclick="showPage('addMusic')"
+                >
+
+                    <i class="fa-solid fa-circle-plus"></i>
+
+                    Add Your Own Music
+
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 MOOD ENGINE
+                 ================================================= -->
+
+            <section class="mood-engine">
+
+                <h2>
+                    Mood Engine
+                </h2>
+
+
+                <div class="mood-buttons">
+
+
+                    <!-- HAPPY -->
+
+                    <button
+                        class="mood-button happy"
+                        onclick="selectMood('Happy')"
+                    >
+
+                        <span class="mood-icon">
+
+                            <svg viewBox="0 0 24 24">
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="9"
+                                ></circle>
+
+                                <circle
+                                    cx="9"
+                                    cy="10"
+                                    r="1"
+                                ></circle>
+
+                                <circle
+                                    cx="15"
+                                    cy="10"
+                                    r="1"
+                                ></circle>
+
+                                <path
+                                    d="M8 14 Q12 18 16 14"
+                                ></path>
+
+                            </svg>
+
+                        </span>
+
+                        <span>Happy</span>
+
+                    </button>
+
+
+
+                    <!-- CHILL -->
+
+                    <button
+                        class="mood-button chill"
+                        onclick="selectMood('Chill')"
+                    >
+
+                        <span class="mood-icon">
+
+                            <svg viewBox="0 0 24 24">
+
+                                <path d="M12 3v18"></path>
+
+                                <path d="M5.6 6.5l12.8 11"></path>
+
+                                <path d="M18.4 6.5l-12.8 11"></path>
+
+                                <path d="M3 12h18"></path>
+
+                            </svg>
+
+                        </span>
+
+                        <span>Chill</span>
+
+                    </button>
+
+
+
+                    <!-- FOCUS -->
+
+                    <button
+                        class="mood-button focus"
+                        onclick="selectMood('Focus')"
+                    >
+
+                        <span class="mood-icon">
+
+                            <svg viewBox="0 0 24 24">
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="7"
+                                ></circle>
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3"
+                                ></circle>
+
+                                <path d="M12 2v3"></path>
+
+                                <path d="M12 19v3"></path>
+
+                                <path d="M2 12h3"></path>
+
+                                <path d="M19 12h3"></path>
+
+                            </svg>
+
+                        </span>
+
+                        <span>Focus</span>
+
+                    </button>
+
+
+
+                    <!-- WORKOUT -->
+
+                    <button
+                        class="mood-button workout"
+                        onclick="selectMood('Workout')"
+                    >
+
+                        <span class="mood-icon">
+
+                            <svg viewBox="0 0 24 24">
+
+                                <path d="M4 9v6"></path>
+
+                                <path d="M7 7v10"></path>
+
+                                <path d="M17 7v10"></path>
+
+                                <path d="M20 9v6"></path>
+
+                                <path d="M7 12h10"></path>
+
+                            </svg>
+
+                        </span>
+
+                        <span>Workout</span>
+
+                    </button>
+
+
+
+                    <!-- SAD -->
+
+                    <button
+                        class="mood-button sad"
+                        onclick="selectMood('Sad')"
+                    >
+
+                        <span class="mood-icon">
+
+                            <svg viewBox="0 0 24 24">
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="9"
+                                ></circle>
+
+                                <circle
+                                    cx="9"
+                                    cy="10"
+                                    r="1"
+                                ></circle>
+
+                                <circle
+                                    cx="15"
+                                    cy="10"
+                                    r="1"
+                                ></circle>
+
+                                <path
+                                    d="M8 16 Q12 12 16 16"
+                                ></path>
+
+                            </svg>
+
+                        </span>
+
+                        <span>Sad</span>
+
+                    </button>
+
+
+
+                    <!-- PARTY -->
+
+                    <button
+                        class="mood-button party"
+                        onclick="selectMood('Party')"
+                    >
+
+                        <span class="mood-icon">
+
+                            <svg viewBox="0 0 24 24">
+
+                                <path
+                                    d="M4 20l4-10 6 6z"
+                                ></path>
+
+                                <path
+                                    d="M14 4l1 3"
+                                ></path>
+
+                                <path
+                                    d="M19 6l-3 1"
+                                ></path>
+
+                                <path
+                                    d="M18 11l-3-1"
+                                ></path>
+
+                            </svg>
+
+                        </span>
+
+                        <span>Party</span>
+
+                    </button>
+
+
+                </div>
+
+
+                <p id="selectedMood">
+                    Choose a mood to create your queue.
+                </p>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 LOCAL SONGS
+                 ================================================= -->
+
+            <h2>
+                All Songs
+            </h2>
+
+
+            <div
+                id="songGrid"
+                class="song-grid"
+            ></div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SEARCH PAGE
+             ================================================= -->
+
+        <section
+            id="searchPage"
+            class="page hidden"
+        >
+
+
+            <div class="search-page-header">
+
+                <h2>
+                    Search
+                </h2>
+
+                <p>
+                    Find songs, artists and albums.
+                </p>
+
+            </div>
+
+
+
+            <!-- RECENT SEARCHES -->
+
+            <div class="recent-searches">
+
+                <div class="section-heading">
+
+                    <h3>
+                        Recent Searches
+                    </h3>
+
+                    <button
+                        id="clearRecentSearches"
+                        type="button"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="recentSearchList"
+                    class="recent-search-list"
+                ></div>
+
+            </div>
+
+
+
+            <!-- LOCAL RESULTS -->
+
+            <div class="search-section">
+
+                <div class="section-heading">
+
+                    <h3>
+                        Your Music
+                    </h3>
+
+                </div>
+
+                <div id="onlineSearchStatus" class="online-search-status">
+                    Search for any song, artist or album.
+                </div>
+
+                <div
+                    id="searchResults"
+                    class="online-search-results"
+                ></div>
+
+            </div>
+
+
+
+            <!-- ONLINE RESULTS -->
+
+            <div class="online-search-section">
+
+                <div class="section-heading">
+
+                    <h3>
+                        Online Results
+                    </h3>
+
+                    <span id="onlineSearchStatus"></span>
+
+                </div>
+
+
+                <div
+                    id="onlineResults"
+                    class="online-results"
+                >
+
+                    <div class="online-search-empty">
+
+                        <i class="fa-solid fa-music"></i>
+
+                        <p>
+                            Search for a song to discover
+                            online music.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             LIBRARY
+             ================================================= -->
+
+        <section
+            id="libraryPage"
+            class="page hidden"
+        >
+
+            <h2>
+                Your Library
+            </h2>
+
+
+            <p>
+                Your added music will appear here.
+            </p>
+
+
+            <div
+                id="librarySongs"
+                class="song-grid"
+            ></div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ADD MUSIC
+             ================================================= -->
+
+        <section
+            id="addMusicPage"
+            class="page hidden"
+        >
+
+
+            <div class="add-music-container">
+
+
+                <h2>
+                    Add Music
+                </h2>
+
+
+                <p>
+                    Add your own music to FlowTune.
+                </p>
+
+
+
+                <form id="addMusicForm">
+
+
+                    <!-- MUSIC FILE -->
+
+                    <label for="musicFile">
+                        Select Music File
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="musicFile"
+                        accept="audio/*"
+                        required
+                    >
+
+
+                    <small>
+                        MP3, WAV, M4A, AAC, OGG and other
+                        audio files.
+                    </small>
+
+
+
+                    <!-- TITLE -->
+
+                    <label for="songTitle">
+                        Song Title
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="songTitle"
+                        placeholder="Enter song title"
+                        required
+                    >
+
+
+
+                    <!-- ARTIST -->
+
+                    <label for="songArtist">
+                        Artist
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="songArtist"
+                        placeholder="Enter artist name"
+                        required
+                    >
+
+
+
+                    <!-- ALBUM -->
+
+                    <label for="songAlbum">
+                        Album
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="songAlbum"
+                        placeholder="Enter album name"
+                    >
+
+
+
+                    <!-- COVER -->
+
+                    <label for="coverFile">
+                        Cover Image
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="coverFile"
+                        accept="image/*"
+                    >
+
+
+                    <small>
+                        Optional: JPG, PNG or WEBP.
+                    </small>
+
+
+
+                    <!-- GENRE -->
+
+                    <label for="songGenre">
+                        Genre
+                    </label>
+
+
+                    <select id="songGenre">
+
+                        <option value="">
+                            Select Genre
+                        </option>
+
+                        <option value="Pop">
+                            Pop
+                        </option>
+
+                        <option value="Rock">
+                            Rock
+                        </option>
+
+                        <option value="Hip Hop">
+                            Hip Hop
+                        </option>
+
+                        <option value="Rap">
+                            Rap
+                        </option>
+
+                        <option value="Bollywood">
+                            Bollywood
+                        </option>
+
+                        <option value="Punjabi">
+                            Punjabi
+                        </option>
+
+                        <option value="Electronic">
+                            Electronic
+                        </option>
+
+                        <option value="Classical">
+                            Classical
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+
+
+                    <!-- ADD SONG -->
+
+                    <button
+                        type="submit"
+                        class="add-song-button"
+                    >
+
+                        ADD SONG
+
+                    </button>
+
+
+
+                    <!-- MESSAGE -->
+
+                    <div
+                        id="addMusicMessage"
+                    ></div>
+
+
+                </form>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =================================================
+         FLOWTUNE PLAYER
+         ================================================= -->
+
+    <footer
+        id="player"
+        class="player"
+    >
+
+
+        <!-- CURRENT SONG -->
+
+        <div class="player-info">
+
+            <img
+                id="playerImage"
+                src="https://picsum.photos/80"
+                alt="Album Cover"
+            >
+
+
+            <div>
+
+                <strong id="playerTitle">
+                    No song selected
+                </strong>
+
+
+                <p id="playerArtist">
+                    Choose a song to start playing
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CONTROLS -->
+
+        <div class="player-controls">
+
+
+            <!-- PREVIOUS -->
+
+            <button
+                class="previous-button"
+                onclick="previousSong()"
+                title="Previous Song"
+                aria-label="Previous Song"
+            >
+
+                <svg viewBox="0 0 24 24">
+
+                    <rect
+                        x="4"
+                        y="5"
+                        width="2.5"
+                        height="14"
+                    ></rect>
+
+                    <path
+                        d="M19 5 L8 12 L19 19 Z"
+                    ></path>
+
+                </svg>
+
+            </button>
+
+
+
+            <!-- PLAY / PAUSE -->
+
+            <button
+                id="playButton"
+                class="play-button"
+                onclick="togglePlay()"
+                title="Play / Pause"
+                aria-label="Play / Pause"
+            >
+
+                <svg viewBox="0 0 24 24">
+
+                    <path
+                        d="M8 5 L19 12 L8 19 Z"
+                    ></path>
+
+                </svg>
+
+            </button>
+
+
+
+            <!-- NEXT -->
+
+            <button
+                class="next-button"
+                onclick="nextSong()"
+                title="Next Song"
+                aria-label="Next Song"
+            >
+
+                <svg viewBox="0 0 24 24">
+
+                    <path
+                        d="M5 5 L16 12 L5 19 Z"
+                    ></path>
+
+                    <rect
+                        x="18"
+                        y="5"
+                        width="2.5"
+                        height="14"
+                    ></rect>
+
+                </svg>
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- VOLUME -->
+
+        <div class="volume-control">
+
+            <span class="volume-text">
+                Volume
+            </span>
+
+
+            <input
+                type="range"
+                id="volumeControl"
+                min="0"
+                max="1"
+                step="0.01"
+                value="1"
+                onchange="changeVolume()"
+            >
+
+        </div>
+
+
+    </footer>
+
+
+
+    <!-- =================================================
+         AUDIO PLAYER
+         ================================================= -->
+
+    <audio id="audioPlayer" preload="metadata" ></audio>
+
+    <!-- Youtube Player-->
+    <div id="youtubePlayerContainer">
+        <div id="youtubePlayer"></div>
+    </div>
+
+    <script src="data/songs.js"></script>
+
+    <!-- Youtube IFrame Player API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+
+
+</body>
+
+</html>
