@@ -537,15 +537,137 @@
              LIBRARY
              ================================================= -->
 
-        <section
-            id="libraryPage"
+        <section id="libraryPage"
             class="page hidden"
         >
 
             <h2>
                 Your Library
             </h2>
+            <!-- ==================================================
+                FLOWTUNE PLAYLISTS
+                ================================================== -->
 
+            <div class="playlist-section">
+
+                <div class="playlist-header">
+
+                    <div>
+                        <h2>My Playlists</h2>
+
+                        <p>
+                            Create and manage your personal playlists.
+                        </p>
+                    </div>
+
+
+                    <button class="create-playlist-button" onclick="openCreatePlaylist()"
+                    >
+                     + Create Playlist
+                </button>
+
+                </div>
+
+                <div id="playlistGrid" class="playlist-grid"></div>
+
+                <!-- PLAYLIST DETAILS -->
+
+                <div id="playlistDetails"class="playlist-details hidden"
+                >
+                <div class="playlist-details-header">
+
+                    <button class="playlist-back-button" onclick="closePlaylistDetails()"
+                    >
+                        <- Back to Library
+                </button>
+
+                <div class="playlist-details-info">
+
+                    <div class="playlist-details-cover">
+
+                    </div>
+
+                    <div>
+
+                        <h2 id="playlistDetailsTitle">
+                            Playlist
+                        </h2>
+
+                        <p id="playlistDetailsCount">
+                            0 songs
+                        </p>
+
+                    </div>
+
+                    <div class="playlist-details-actions">
+
+                        <button class="playlist-action-button" onclick="playPlaylistAll()"
+                        >
+                         Play All
+                    </button>
+
+                    <button class="playlist-action-button shuffle" onclick="shufflePlaylist()"
+                    >
+                      Shuffle
+                </button>
+
+              </div>
+
+          </div>
+
+          <div id="playlistSongList" class="playlist-song-list">
+            
+          </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- =============================================
+                 CREATE PLAYLIST MODAL
+                 ============================================= -->
+
+                 <div id="playlistModal" class="playlist-modal"
+                 >
+
+                 <div class="playlist-modal-box">
+
+                    <button class="playlist-close-button" onclick="closeCreatePlaylist()"
+                    >
+                     x
+                </button>
+
+                <h2>Create playlist</h2>
+
+                <p class="playlist-modal-subtitle">
+                    Give your playlist a name.
+                </p>
+
+
+                <input
+                  type="text"
+                  id="playlistNameInput"
+                  class="playlist-name-input"
+                  placeholder="My Playlist"
+                  maxlength="50"
+                  >
+
+                  <div class="playlist-modal-actions">
+
+                    <button class="playlist-cancel-button" onclick="closeCreatePlaylist()"
+                    >
+                     Cancel
+                </button>
+
+                <button class="playlist-create-button" onclick="createPlaylist()"
+                >
+                 Create Playlist
+            </button>
+
+                 </div>
+
+             </div>
+         
+        </div>
 
             <p>
                 Your added music will appear here.
@@ -557,7 +679,7 @@
                 class="song-grid"
             ></div>
 
-        </section>
+        </section
 
 
 
@@ -795,6 +917,13 @@
                     Choose a song to start playing
                 </p>
 
+                <button
+                    id="addCurrentToPlayListButton"
+                    class="add-playlist-button"
+                    onclick="openAddToPlaylist()"
+                >
+                    + Playlist                   
+                </button>
             </div>
 
         </div>
@@ -932,7 +1061,30 @@
     <script src="config.js"></script>
     <script src="app.js"></script>
 
+    <!-- ===========================================
+         ADD SONG TO PLAYLIST MODAL 
+         =========================================== -->
 
+    <div id="addToPlaylistModal" class="playlist-modal"
+    >
+        <div class="playlist-modal-box">
+
+            <button class="playlist-close-button" onclick="closeAddToPlaylist()"
+            >
+                x
+        </button>
+
+        <h2>Add to Playlist</h2>
+
+        <p class="playlist-modal-subtitle">
+            Choose a playlist for this song.
+        </p>
+
+        <div id="addToPlaylistList" class="add-to-playlist-list"
+        ></div>
+        
+        </div>
+    </div>
 </body>
 
 </html>
